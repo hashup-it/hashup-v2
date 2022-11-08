@@ -5,23 +5,23 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 /**
- * @dev HashUp implementation of ERC20 Metadata that suits HashupCartridge.
+ * @dev HashUp implementation of ERC20 Metadata that suits Hashuplicense.
  */
-contract CartridgeMetadata is Ownable {
-	// Cartridge name
+contract LicenseMetadata is Ownable {
+	// License name
 	string private _name;
 
-	// Cartridge symbol
+	// License symbol
 	string private _symbol;
 
-	// Cartridge color
+	// License color
 	string private _color;
 
 	// Other Metadata URL
 	string private _metadataUrl;
 
 	/**
-	 * @dev Initializes the Cartridge Contract and sets
+	 * @dev Initializes the License Contract and sets
 	 * correct color for provided supply and metadata.
 	 */
 	constructor(
@@ -58,7 +58,7 @@ contract CartridgeMetadata is Ownable {
 	}
 
 	/**
-	 * @dev Returns the color of cartridge. See {_getColorForSupply}
+	 * @dev Returns the color of license. See {_getColorForSupply}
 	 * function for details
 	 */
 	function color() public view returns (string memory) {
@@ -66,34 +66,34 @@ contract CartridgeMetadata is Ownable {
 	}
 
 	/**
-	 * @dev Returns the name of the cartridge.
+	 * @dev Returns the name of the license.
 	 */
 	function name() public view returns (string memory) {
 		return _name;
 	}
 
 	/**
-	 * @dev Returns the symbol of the cartridge.
+	 * @dev Returns the symbol of the license.
 	 */
 	function symbol() public view returns (string memory) {
 		return _symbol;
 	}
 
 	/**
-	 * @dev Returns the URL of other cartridge metadata
+	 * @dev Returns the URL of other license metadata
 	 */
 	function metadataUrl() public view returns (string memory) {
 		return _metadataUrl;
 	}
 
 	/**
-	 * @dev Returns Cartridge color for specified supply. There are three types
-	 * of cartridges based on a totalSupply (numbers without including decimals)
-	 * 0 - 133.700 => Gold Cartridge
-	 * 133.701 - 100 000 000 => Gray Cartridge
-	 * 100 000 001+ => Custom Cartridge
+	 * @dev Returns License color for specified supply. There are three types
+	 * of licenses based on a totalSupply (numbers without including decimals)
+	 * 0 - 133.700 => Gold License
+	 * 133.701 - 100 000 000 => Gray License
+	 * 100 000 001+ => Custom License
 	 *
-	 * NOTE: Color doesn't affect Cartridge Token logic, it's used for display
+	 * NOTE: Color doesn't affect License Token logic, it's used for display
 	 * purposes so we can simplify token economics visually.
 	 */
 	function _getColorForSupply(uint256 supply)

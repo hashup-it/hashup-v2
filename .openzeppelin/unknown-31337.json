@@ -2,7 +2,7 @@
   "manifestVersion": "3.2",
   "admin": {
     "address": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
-    "txHash": "0xe035681c507f50fd64d57f36b0d34cc250ee4ef44a5e4817a1849d82d018e94e"
+    "txHash": "0x4dd1107141f16f365faec7cebab9830ef0bb767ad78e45947458e6175aded7cc"
   },
   "proxies": [
     {
@@ -17,27 +17,42 @@
     },
     {
       "address": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
-      "txHash": "0x67aca615eecbdde448c1abfe72b456eb35c3ea94694feed08bbbcbbc91a51138",
+      "txHash": "0xec5ce5dbded57e2f80e36707200ddea189d8c249826ca0538179e3c08e5b7ee7",
       "kind": "transparent"
     },
     {
-      "address": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
-      "txHash": "0xe5a12e838d265e22d38c03373333f157c3fea7c799c9a7a32367fab71ba22dcd",
-      "kind": "transparent"
-    },
-    {
-      "address": "0x0165878A594ca255338adfa4d48449f69242Eb8F",
-      "txHash": "0xe4954d94e7b087456f832717e0eb8963f39346e08caa4c6b522c95954aab071f",
-      "kind": "transparent"
-    },
-    {
-      "address": "0x8A791620dd6260079BF849Dc5567aDC3F2FdC318",
-      "txHash": "0xf0c7ca28c3c0629465870188da678b835823672f5516e4aea9c2939d97edc2c0",
+      "address": "0x610178dA211FEF7D417bC0e6FeD39F05609AD788",
+      "txHash": "0x4ac81bb993c8e63af264879c5a8359cc848ee454991e028430d66adfbde93903",
       "kind": "transparent"
     },
     {
       "address": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
-      "txHash": "0x890dbd2c6c3f6e797daf2589d4768d30cd7ee59db3bb3f0b052239f9493fa114",
+      "txHash": "0xef1397402238b452dd9c0f093f01e3b71e8a2a2dc416bf78861ed259a4524e3a",
+      "kind": "transparent"
+    },
+    {
+      "address": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
+      "txHash": "0x8681dc0c42bed7e12cc1123f8a043308bc2d9589117eb29ab142e1c979f69b34",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x0165878A594ca255338adfa4d48449f69242Eb8F",
+      "txHash": "0x6bf4570d92917d79c45326a749ac61d2de2c2385b8962ecfae2927c228c2cf4c",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x8A791620dd6260079BF849Dc5567aDC3F2FdC318",
+      "txHash": "0x30a5be5c2d04d74d8b10fd85efe93a3088e87194600ac1cc28683f7ce1d0c69d",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82",
+      "txHash": "0x04edc0ee7cafc6841474a00a67db102beb5bb014e163228c0c5fa2df315586f8",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x0B306BF915C4d645ff596e518fAf3F9669b97016",
+      "txHash": "0x4223b718eca4665488c752ddbc0d663fd54e74174dc59d00802904e32f7c4677",
       "kind": "transparent"
     }
   ],
@@ -110,9 +125,9 @@
         }
       }
     },
-    "256ec183f36c8c9940b8523bdca833fa27a7fadbab19ea24cc4b36e30abf3381": {
+    "dd07cb270540f5bc87a19474d4162171b3dbd8c2fb5e27e972496ed75645b013": {
       "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
-      "txHash": "0xd761800bbc55f5e3762f4dcf15724035164702de4e711ddf7b4ce8d41f55b30c",
+      "txHash": "0xd3832295cadafff3c047f0b3804b4fa9e1389a141235272ed72aa3914162e3ed",
       "layout": {
         "solcVersion": "0.8.17",
         "storage": [
@@ -134,30 +149,118 @@
             "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:67"
           },
           {
-            "label": "x",
+            "label": "__gap",
             "offset": 0,
             "slot": "1",
-            "type": "t_uint256",
-            "contract": "BoxV1",
-            "src": "contracts/BoxV1.sol:7"
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ContextUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol:36"
+          },
+          {
+            "label": "_paused",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_bool",
+            "contract": "PausableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol:29"
           },
           {
             "label": "__gap",
             "offset": 0,
-            "slot": "2",
-            "type": "t_array(t_uint256)19_storage",
-            "contract": "BoxV1",
-            "src": "contracts/BoxV1.sol:8"
+            "slot": "52",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "PausableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol:116"
+          },
+          {
+            "label": "_owner",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_address",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:22"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "102",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:94"
+          },
+          {
+            "label": "_marketWhitelist",
+            "offset": 0,
+            "slot": "151",
+            "type": "t_mapping(t_address,t_bool)",
+            "contract": "HashupStoreV1",
+            "src": "contracts/HashupStoreV1.sol:51"
+          },
+          {
+            "label": "_licenseSales",
+            "offset": 0,
+            "slot": "152",
+            "type": "t_mapping(t_address,t_struct(SaleInformation)1429_storage)",
+            "contract": "HashupStoreV1",
+            "src": "contracts/HashupStoreV1.sol:54"
+          },
+          {
+            "label": "_hashupFee",
+            "offset": 0,
+            "slot": "153",
+            "type": "t_uint256",
+            "contract": "HashupStoreV1",
+            "src": "contracts/HashupStoreV1.sol:59"
           }
         ],
         "types": {
-          "t_array(t_uint256)19_storage": {
-            "label": "uint256[19]",
-            "numberOfBytes": "608"
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
           },
           "t_bool": {
             "label": "bool",
             "numberOfBytes": "1"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_struct(SaleInformation)1429_storage)": {
+            "label": "mapping(address => struct HashupStoreV1.SaleInformation)",
+            "numberOfBytes": "32"
+          },
+          "t_struct(SaleInformation)1429_storage": {
+            "label": "struct HashupStoreV1.SaleInformation",
+            "members": [
+              {
+                "label": "price",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "marketplaceFee",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "sale",
+                "type": "t_bool",
+                "offset": 0,
+                "slot": "2"
+              }
+            ],
+            "numberOfBytes": "96"
           },
           "t_uint256": {
             "label": "uint256",

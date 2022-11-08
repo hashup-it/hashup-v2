@@ -5,9 +5,10 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
-import "./HashupCartridge.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-import "hardhat/console.log";
+import "./HashupLicense.sol";
+import "hardhat/console.sol";
 
 /// @title Hashup Multimarketplace Store
 /// @author The name of the author
@@ -22,6 +23,7 @@ contract HashupStoreV1 is
     struct SaleInformation {
         uint256 price;
         uint256 marketplaceFee;
+        bool sale;
     }
 
     event Bought(
@@ -42,8 +44,8 @@ contract HashupStoreV1 is
         uint256 transferFee,
         uint256 marketplaceFee
     );
-
     event PriceChanged(address license, uint256 newPrice);
+    event Withdrawal(address license, uint256 amount);
 
     // Whitelist of addresses that are elgible to take marketplace fee
     mapping(address => bool) private _marketWhitelist;
@@ -51,11 +53,46 @@ contract HashupStoreV1 is
     //
     mapping(address => SaleInformation) private _licenseSales;
 
-    uint256 hashupFee = 5;
+    uint256 constant MAX_HASHUP_FEE = 10;
+    uint256 constant MAX_MARKETPLACE_FEE = 90;
+
+    uint256 private _hashupFee;
+
+	address private _paymentToken;
 
     function initialize() public initializer {
         _transferOwnership(msg.sender);
+        _setHashupFee(10);
+		_setPaymentToken(address(0));
     }
+
+    function setHashupFee(uint256 newHashupFee) public onlyOwner {
+        _setHashupFee(newHashupFee);
+    }
+
+    function _setHashupFee(uint256 newHashupFee) internal {
+        require(
+            newHashupFee <= MAX_HASHUP_FEE,
+            "HashupStore: HashupFee exceeded max limit."
+        );
+        _hashupFee = newHashupFee;
+    }
+
+	function getHashupFee() external view returns(uint256) {
+		return _hashupFee;
+	}
+
+	function getPaymentToken() external view returns(address) {
+		return _paymentToken;
+	}
+
+	function setPaymentToken(address newPaymentToken) public onlyOwner {
+		_setPaymentToken(newPaymentToken);
+	}
+
+	function _setPaymentToken(address newPaymentToken) public onlyOwner {
+		paymentToken = newPaymentToken;
+	}
 
     // Used to toggle state of Pausable contract
     function togglePause() public onlyOwner {
@@ -84,43 +121,73 @@ contract HashupStoreV1 is
         );
     }
 
-    modifier onlyCartridgeCreator(address cartridge) {
-        _checkCartridgeCreator(cartridge);
+    modifier onlyLicenseCreator(address License) {
+        _checkLicenseCreator(License);
         _;
     }
 
-    function _checkCartridgeCreator(address license) internal view {
+    function _checkLicenseCreator(address license) internal view {
         require(
-            msg.sender == HashupCartridge(license).owner(),
-            "HashupStore: must be Cartridge creator."
+            msg.sender == HashupLicense(license).owner(),
+            "HashupStore: must be License creator."
         );
     }
 
     function sendLicenseToStore(
-        address cartridge,
+        address license,
         uint256 price,
         uint256 amount,
         uint256 marketplaceFee
-    ) public onlyCartridgeCreator(cartridge) whenNotPaused {
+    ) public onlyLicenseCreator(license) whenNotPaused {
+        require(
+            _licenseSales[license].sale == false,
+            "HashupStore: Can't set for sale second time"
+        );
 
-		console.log(cartridgePrices[cartridgeAddress]);
+        HashupLicense licenseToken = HashupLicense(license);
+        licenseToken.transferFrom(msg.sender, address(this), amount);
 
-		require(
-			_licenseSales[cartridgeAddress] == true,
-			"HashupStore: Can't set for sale second time"
-		);
-	}
+        _licenseSales[license] = SaleInformation(price, marketplaceFee, true);
 
-    function withdrawCartridges(address license, uint256 _amount)
+        emit NewSale(
+            license,
+            licenseToken.symbol(),
+            licenseToken.name(),
+            licenseToken.color(),
+            price,
+            licenseToken.metadataUrl(),
+            licenseToken.totalSupply(),
+            licenseToken.creatorFee(),
+            marketplaceFee
+        );
+    }
+
+    function withdrawLicenses(address license, uint256 amount)
         external
-        onlyCartridgeCreator(license)
-    {}
+        onlyLicenseCreator(license)
+        returns (uint256)
+    {
+        HashupLicense licenseToken = HashupLicense(license);
+        uint256 availableAmount = licenseToken.balanceOf(address(this));
 
-    function getCartridgePrice(address license) public view returns (uint256) {
+        if (availableAmount >= amount) {
+            // Return all licenses
+            licenseToken.transfer(msg.sender, amount);
+            emit Withdrawal(license, amount);
+            return amount;
+        } else {
+            // Return as much as possible
+            licenseToken.transfer(msg.sender, availableAmount);
+            emit Withdrawal(license, availableAmount);
+            return availableAmount;
+        }
+    }
+
+    function getLicensePrice(address license) public view returns (uint256) {
         return _licenseSales[license].price;
     }
 
-    function getCartridgeMarketplaceFee(address license)
+    function getLicenseMarketplaceFee(address license)
         public
         view
         returns (uint256)
@@ -128,10 +195,13 @@ contract HashupStoreV1 is
         return _licenseSales[license].marketplaceFee;
     }
 
-    function changeCartridgePrice(address license, uint256 newPrice)
+    function changeLicensePrice(address license, uint256 newPrice)
         public
-        onlyCartridgeCreator(license)
-    {}
+        onlyLicenseCreator(license)
+    {
+        _licenseSales[license] = newPrice;
+        emit PriceChanged(license, newPrice);
+    }
 
     function distributePayment(
         uint256 totalValue,
@@ -146,8 +216,7 @@ contract HashupStoreV1 is
             uint256 toHashup
         )
     {
-        
-        // Split provided price between HashUp, marketplace and Cartridge creator
+        // Split provided price between HashUp, marketplace and License creator
         uint256 hashupPart = (totalValue * hashupFee) / 100;
         uint256 marketplacePart = (totalValue * marketplaceFee) / 100;
         uint256 creatorPart = totalValue - hashupPart - marketplacePart;
@@ -155,12 +224,36 @@ contract HashupStoreV1 is
         return (creatorPart, marketplacePart, hashupPart);
     }
 
-    function buyCartridge(
-        address cartridge,
+    function buyLicense(
+        address license,
         uint256 amount,
         address marketplace,
         address referrer
     ) public whenNotPaused onlyWhitelisted(marketplace) {
+        IERC20 paymentToken = IERC20(paymentToken);
+        HashupLicense licenseToken = HashupLicense(license);
 
-	}
+        uint256 totalPrice = getLicensePrice(license) * amount;
+
+        (
+            uint256 toCreator,
+            uint256 toMarketplace,
+            uint256 toHashup
+        ) = distributePayment(
+                totalPrice,
+                _hashupFee,
+                getLicenseMarketplaceFee(license)
+            );
+
+        // Send licenses from HashupStore to buyer
+        licenseToken.transfer(msg.sender, amount);
+
+        // Send payment token to creator
+        paymentToken.transferFrom(msg.sender, license.owner(), toCreator);
+
+        // Send tokens to HashUp
+        paymentToken.transferFrom(msg.sender, owner(), toHashup);
+
+        emit Bought(license, totalPrice, amount, referrer);
+    }
 }
