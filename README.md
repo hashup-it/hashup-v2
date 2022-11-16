@@ -54,7 +54,7 @@ pragma solidity 0.8.17
 ### Events
 
 #### NewSale
-This event is emitted after every sale through [sendLicenseToStore(address, uint256, uint256, uint256)](#withdraw) function.  It contains useful data about listed License.
+This event is emitted after every sale through [sendLicenseToStore(address, uint256, uint256, uint256)](#withdraw) function.  It contains useful data about listed License, so you we can only listen for this event and get all data we need. 
 ```solidity
 event NewSale(
     address license,
