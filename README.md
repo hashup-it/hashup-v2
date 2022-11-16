@@ -1,6 +1,6 @@
 # HashupProtocol V2
 
-
+This is documentation for HashupLicense and HashupStoreV2 smart contracts. 
 
 ## Documentation
 
