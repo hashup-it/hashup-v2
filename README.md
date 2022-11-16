@@ -20,6 +20,14 @@ This is documentation for HashupLicense and HashupStoreV2 smart contracts.
 ### HashupStore
 
 
+### Whitelist
+This is list of all Marketplaces accepted by HashUp in our Store contract. If you want your own marketplace contact us.
+
+| Name     | Network | Address                                      | Status      |
+|:---------|:--------|:---------------------------------------------|:------------|
+| Hashup   | Polygon | 0xf55c1D51326f8FfFc025F35BC85dF4b49fc7dE37   | OK          |
+| Partner2 | Polygon | 0xf55c1D51326f8FfFc025F35BC85dF4b49fc7dE37   | OK          |
+
 ### Deployment addresses
 | Newtork | ChainID | Address                                      |
 |:--------|:--------|:---------------------------------------------|
