@@ -132,9 +132,28 @@ event Withdrawal(
 
 ### Mappings
 
-### Constants
+Maps address of license contract to information about its sale. License must be here to be sold in protocol.
+```solidity
+mapping(address => SaleInformation) private _licenseSales;
+```
 
+Indicates whether address is whitelisted and elgible to take marketplace fee in ```buyLicense``` function
+```solidity
+mapping(address => bool) private _marketWhitelist;
+```
+
+### Constants
+Maximum value that can go to marketplace, used to calculate revenue ratio of creator and marketplace
+```solidity
+uint256 constant MAX_MARKETPLACE_FEE = 90;
+```
+
+Maximum value that HashUp can operate on, in future will be used to calculate how much goes to buyback&burn and HashUp
+```solidity
+uint256 constant MAX_HASHUP_FEE = 10;
+```
 ### Variables
+
 
 ### Structs
 
