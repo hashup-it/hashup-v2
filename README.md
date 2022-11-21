@@ -153,10 +153,15 @@ Maximum value that HashUp can operate on, in future will be used to calculate ho
 uint256 constant MAX_HASHUP_FEE = 10;
 ```
 ### Variables
-
-
+Stores how much % of sale will go to the HashUp, ```_hashupFee``` - ```HASHUP_MAX_FEE``` will go to buyback&burn in future
+```solidity
+uint256 private _hashupFee;
+```
+Stores ERC20 contract address that is used to pay for Licenses in store
+```solidity
+address private _paymentToken;
+```
 ### Structs
-
 #### SaleInformation
 This struct stores all information about specific License sale
 ```solidity 
