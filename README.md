@@ -25,14 +25,14 @@ This is list of all Marketplaces accepted by HashUp in our Store contract. If yo
 
 | Name     | Network | Address                                      | Status      |
 |:---------|:--------|:---------------------------------------------|:------------|
-| Hashup   | Polygon | 0xf55c1D51326f8FfFc025F35BC85dF4b49fc7dE37   | OK          |
-| Partner2 | Polygon | 0xf55c1D51326f8FfFc025F35BC85dF4b49fc7dE37   | OK          |
+| Hashup   | Polygon | insert   | OK          |
+| Partner2 | Polygon | insert   | OK          |
 
 ### Deployment addresses
 | Newtork | ChainID | Address                                      |
 |:--------|:--------|:---------------------------------------------|
-| Polygon | 137     | 0xf55c1D51326f8FfFc025F35BC85dF4b49fc7dE37   |
-| Mumbai  | 80001   | 0xf55c1D51326f8FfFc025F35BC85dF4b49fc7dE37   |
+| Polygon | 137     | insert   |
+| Mumbai  | 80001   | insert   |
 
 ## Publishing a License
 
@@ -58,6 +58,30 @@ pragma solidity 0.8.17
 ```
 ### Dependencies
 
+Initializers instead of constructors are used in upgradeable contracts, so we need this:
+```solidity 
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+```
+
+Pausing the contract:
+```solidity 
+import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
+```
+
+Ownership mechanism:
+```solidity 
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+```
+
+To interact with IERC20 :
+```solidity 
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+```
+
+To interact with HashupLicense:
+```solidity 
+import "./HashupLicense.sol";
+```
 
 ### Events
 
