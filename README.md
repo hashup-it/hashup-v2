@@ -177,7 +177,7 @@ function sendLicenseToStore(
     uint256 price,
     uint256 amount,
     uint256 marketplaceFee
-) public onlyLicenseCreator(license) whenNotPaused {
+) public onlyLicenseCreator(license) whenNotPaused
 ```
 Function lists license for sale with provided data. It emits [New Sale](#newsale) event.
 
@@ -195,7 +195,7 @@ function buyLicense(
     uint256 amount,
     address marketplace,
     address referrer
-) public whenNotPaused onlyWhitelisted(marketplace) {
+) public whenNotPaused onlyWhitelisted(marketplace)
 ```
 Fuction that exchanges your payment token for licenses. If you want to buy 1.00 license you must provide amount with number 100. Marketplace should be address of wallet of front-end provider of store, it must be approved by HashUp first. If you want to buy game by interacting smart contract by yourself just provide it with any address from [whitelist](#whitelist). It emits [Bought](#bought) event.
 
@@ -279,11 +279,20 @@ function getLicensePrice(address license) public view returns (uint256)
 ```
 Returns price of specific license.
 
+
+#### getPaymentToken
+```solidity
+function getPaymentToken() external view returns (address)
+```
+Returns current payment token address
+
+
 #### getLicenseMarketplaceFee
 ```solidity
 function getLicenseMarketplaceFee(address license) public view returns (uint256)
 ```
 Returns marketplace fee of specific license.
+
 
 #### isWhitelisted
 ```solidity 
