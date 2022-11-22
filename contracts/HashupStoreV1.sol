@@ -146,7 +146,7 @@ contract HashupStoreV1 is
             _licenseSales[license].sale == false,
             "HashupStore: Can't set for sale second time"
         );
-        require(marketplaceFee <= MMAX_MARKETPLACE_FEE, "HashupStore: Marketplace fee is too high");
+        require(marketplaceFee <= MAX_MARKETPLACE_FEE, "HashupStore: Marketplace fee is too high");
 
         HashupLicense licenseToken = HashupLicense(license);
         licenseToken.transferFrom(msg.sender, address(this), amount);
