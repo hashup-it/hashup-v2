@@ -12,13 +12,16 @@ This is documentation for HashupLicense and HashupStoreV2 smart contracts.
 * [Code overview](#code-overview)
 
 ## What is HashupProtocol
+-------------------------------------
 
 ### License
+-------------------------------------
 
 ### Marketplace
+-------------------------------------
 
 ### HashupStore
-
+-------------------------------------
 
 ### Whitelist
 This is list of all Marketplaces accepted by HashUp in our Store contract. If you want your own marketplace contact us.
@@ -36,19 +39,12 @@ This is list of all Marketplaces accepted by HashUp in our Store contract. If yo
 
 ## Publishing a License
 
-### Prerequisites
-
-### Deploying a License
-
-### License approval
-
-### Listing License in HashupStore
+At first game publisher must deploy `HashupLicense.sol` contract, then approve our store to use it and evoke [sendLicenseToStore()](#sendlicensetostore) function. To ensure that process is correct we encourage to use [https://gamecontract.io/](https://gamecontract.io/) - our license deployment and management platform. 
 
 ## Buying a License
 
-### Payment token approval
+To buy games via our protocol you need sufficient amount of paymentToken - you can check its address by using [getPaymentToken()](#getpaymenttoken) function. Currently it's USDC on Polygon, but it may change later. Then you need to approve 
 
-### Payment and 
 
 
 ## Code overview
@@ -174,7 +170,42 @@ struct SaleInformation {
 
 ### Public functions
 
-#### withdraw
+#### sendLicenseToStore
+```solidity
+function sendLicenseToStore(
+    address license,
+    uint256 price,
+    uint256 amount,
+    uint256 marketplaceFee
+) public onlyLicenseCreator(license) whenNotPaused {
+```
+Function lists license for sale with provided data. It emits [New Sale](#newsale) event.
+
+Requirements:
+- Must be license creator
+- Contract must not be paused
+- You must have at least `amount` of licenses and approve store to use it
+- `marketplaceFee` must be lower or equal to `MAX_MARKETPLACE_FEE`
+- License must have not been listed before
+
+#### buyLicense
+```solidity
+function buyLicense(
+    address license,
+    uint256 amount,
+    address marketplace,
+    address referrer
+) public whenNotPaused onlyWhitelisted(marketplace) {
+```
+Fuction that exchanges your payment token for licenses. If you want to buy 1.00 license you must provide amount with number 100. Marketplace should be address of wallet of front-end provider of store, it must be approved by HashUp first. If you want to buy game by interacting smart contract by yourself just provide it with any address from [whitelist](#whitelist). It emits [Bought](#bought) event.
+
+Requirements:
+- Marketplace must be on whitelist
+- Contract must not be paused
+- You must have at least `amount` * `(price of license unit)`  of payment token and approve store to use it 
+- License must be listed in store
+
+#### changeLicensePrice
 
 ```solidity 
 function changeLicensePrice(address license, uint256 newPrice)
@@ -186,8 +217,9 @@ you must multiply your newPrice argument by 100. It emits [PriceChanged](#pricec
 
 Requirements:
 - Must be license creator
+- License must be already listed in store via `sendLicenseToStore()` function
 
-#### withdraw
+#### withdrawLicenses
 
 ```solidity 
 function withdrawLicenses(address license, uint256 amount)
@@ -200,4 +232,61 @@ This function transfers specific licenses from store to sender. If amount provid
 Requirements:
 - Must be license creator
 
-### Internal functions
+#### toggleWhitelisted
+
+```solidity 
+function toggleWhitelisted(address marketplace) public onlyOwner
+```
+It toggles marketplace whitelist on or off. If marketplace is not whitelisted it will whitelist it.
+
+Requirements:
+- Must be contract owner
+
+#### setPaymentToken
+
+```solidity 
+function setPaymentToken(address newPaymentToken) public onlyOwner
+```
+It changes address of token that is used for license payments in this contract. Make sure its `ERC20` compatible.
+
+Requirements:
+- Must be contract owner
+
+#### setHashupFee
+
+```solidity 
+function setHashupFee(uint256 newHashupFee) public onlyOwner
+```
+It changes address of token that is used for license payments in this contract. Make sure its `ERC20` compatible.
+
+Requirements:
+- Must be contract owner
+- `newHashupFee` must be lower or equal to `MAX_HASHUP_FEE`
+
+#### togglePause
+
+```solidity 
+function togglePause() public onlyOwner
+```
+Toggles whether contract is paused on and off
+
+Requirements:
+- Must be contract owner
+
+#### getLicensePrice
+```solidity
+function getLicensePrice(address license) public view returns (uint256)
+```
+Returns price of specific license.
+
+#### getLicenseMarketplaceFee
+```solidity
+function getLicenseMarketplaceFee(address license) public view returns (uint256)
+```
+Returns marketplace fee of specific license.
+
+#### isWhitelisted
+```solidity 
+function isWhitelisted(address marketplace) public view returns (bool)
+```
+Returns whether address is whitelisted to be marketplace
