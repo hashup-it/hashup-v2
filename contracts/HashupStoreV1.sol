@@ -50,7 +50,6 @@ contract HashupStoreV1 is
     // Whitelist of addresses that are elgible to take marketplace fee
     mapping(address => bool) private _marketWhitelist;
 
-    //
     mapping(address => SaleInformation) private _licenseSales;
 
     uint256 constant MAX_HASHUP_FEE = 10;
@@ -58,12 +57,12 @@ contract HashupStoreV1 is
 
     uint256 private _hashupFee;
 
-	address private _paymentToken;
+    address private _paymentToken;
 
     function initialize() public initializer {
         _transferOwnership(msg.sender);
         _setHashupFee(10);
-		_setPaymentToken(address(0));
+        _setPaymentToken(address(0));
     }
 
     function setHashupFee(uint256 newHashupFee) public onlyOwner {
@@ -73,26 +72,26 @@ contract HashupStoreV1 is
     function _setHashupFee(uint256 newHashupFee) internal {
         require(
             newHashupFee <= MAX_HASHUP_FEE,
-            "HashupStore: HashupFee exceeded max limit."
+            "HashupStore: HashupFee exceeded max limit"
         );
         _hashupFee = newHashupFee;
     }
 
-	function getHashupFee() external view returns(uint256) {
-		return _hashupFee;
-	}
+    function getHashupFee() external view returns (uint256) {
+        return _hashupFee;
+    }
 
-	function getPaymentToken() external view returns(address) {
-		return _paymentToken;
-	}
+    function getPaymentToken() external view returns (address) {
+        return _paymentToken;
+    }
 
-	function setPaymentToken(address newPaymentToken) public onlyOwner {
-		_setPaymentToken(newPaymentToken);
-	}
+    function setPaymentToken(address newPaymentToken) public onlyOwner {
+        _setPaymentToken(newPaymentToken);
+    }
 
-	function _setPaymentToken(address newPaymentToken) public onlyOwner {
-		paymentToken = newPaymentToken;
-	}
+    function _setPaymentToken(address newPaymentToken) internal {
+        _paymentToken = newPaymentToken;
+    }
 
     // Used to toggle state of Pausable contract
     function togglePause() public onlyOwner {
@@ -114,11 +113,15 @@ contract HashupStoreV1 is
     }
 
     // Returns whether address is whitelisted marketplace
-    function _checkWhitelisted(address marketplace) public view returns (bool) {
+    function _checkWhitelisted(address marketplace) internal  {
         require(
             _marketWhitelist[marketplace] == true,
             "HashupStore: marketplace must be whitelisted."
         );
+    }
+
+    function isWhitelisted(address marketplace) public view returns (bool) {
+        return _marketWhitelist[marketplace];
     }
 
     modifier onlyLicenseCreator(address License) {
@@ -129,7 +132,7 @@ contract HashupStoreV1 is
     function _checkLicenseCreator(address license) internal view {
         require(
             msg.sender == HashupLicense(license).owner(),
-            "HashupStore: must be License creator."
+            "HashupStore: must be License creator"
         );
     }
 
@@ -143,6 +146,7 @@ contract HashupStoreV1 is
             _licenseSales[license].sale == false,
             "HashupStore: Can't set for sale second time"
         );
+        require(marketplaceFee <= MMAX_MARKETPLACE_FEE, "HashupStore: Marketplace fee is too high");
 
         HashupLicense licenseToken = HashupLicense(license);
         licenseToken.transferFrom(msg.sender, address(this), amount);
@@ -199,7 +203,8 @@ contract HashupStoreV1 is
         public
         onlyLicenseCreator(license)
     {
-        _licenseSales[license] = newPrice;
+        require(_licenseSales[license].sale == true, "HashupStore: License isn't listed in store");
+        _licenseSales[license].price = newPrice;
         emit PriceChanged(license, newPrice);
     }
 
@@ -230,7 +235,7 @@ contract HashupStoreV1 is
         address marketplace,
         address referrer
     ) public whenNotPaused onlyWhitelisted(marketplace) {
-        IERC20 paymentToken = IERC20(paymentToken);
+        IERC20 paymentToken = IERC20(_paymentToken);
         HashupLicense licenseToken = HashupLicense(license);
 
         uint256 totalPrice = getLicensePrice(license) * amount;
@@ -249,7 +254,10 @@ contract HashupStoreV1 is
         licenseToken.transfer(msg.sender, amount);
 
         // Send payment token to creator
-        paymentToken.transferFrom(msg.sender, license.owner(), toCreator);
+        paymentToken.transferFrom(msg.sender, licenseToken.owner(), toCreator);
+
+        // Send payment token to marketplace
+        paymentToken.transferFrom(msg.sender, marketplace, toMarketplace);
 
         // Send tokens to HashUp
         paymentToken.transferFrom(msg.sender, owner(), toHashup);

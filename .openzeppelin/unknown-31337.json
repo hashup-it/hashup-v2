@@ -2,7 +2,7 @@
   "manifestVersion": "3.2",
   "admin": {
     "address": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
-    "txHash": "0x4dd1107141f16f365faec7cebab9830ef0bb767ad78e45947458e6175aded7cc"
+    "txHash": "0x48c9ed8b869898d3fec5727d979f8ac39bb9bcdcf6d0a05ddf9acbd35b283b56"
   },
   "proxies": [
     {
@@ -13,31 +13,6 @@
     {
       "address": "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853",
       "txHash": "0xee74148197c5706b415521650f0aa60a995c25fa898c3dfc2d2e0cfca699ef44",
-      "kind": "transparent"
-    },
-    {
-      "address": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
-      "txHash": "0xec5ce5dbded57e2f80e36707200ddea189d8c249826ca0538179e3c08e5b7ee7",
-      "kind": "transparent"
-    },
-    {
-      "address": "0x610178dA211FEF7D417bC0e6FeD39F05609AD788",
-      "txHash": "0x4ac81bb993c8e63af264879c5a8359cc848ee454991e028430d66adfbde93903",
-      "kind": "transparent"
-    },
-    {
-      "address": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
-      "txHash": "0xef1397402238b452dd9c0f093f01e3b71e8a2a2dc416bf78861ed259a4524e3a",
-      "kind": "transparent"
-    },
-    {
-      "address": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
-      "txHash": "0x8681dc0c42bed7e12cc1123f8a043308bc2d9589117eb29ab142e1c979f69b34",
-      "kind": "transparent"
-    },
-    {
-      "address": "0x0165878A594ca255338adfa4d48449f69242Eb8F",
-      "txHash": "0x6bf4570d92917d79c45326a749ac61d2de2c2385b8962ecfae2927c228c2cf4c",
       "kind": "transparent"
     },
     {
@@ -53,6 +28,41 @@
     {
       "address": "0x0B306BF915C4d645ff596e518fAf3F9669b97016",
       "txHash": "0x4223b718eca4665488c752ddbc0d663fd54e74174dc59d00802904e32f7c4677",
+      "kind": "transparent"
+    },
+    {
+      "address": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
+      "txHash": "0xd272efa9df0f4d5bbbe9a60b41f44f3edee80f53199d67a46c22a773ab663e24",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x0165878A594ca255338adfa4d48449f69242Eb8F",
+      "txHash": "0x49e62b2744c3dc7b5b811c7c5c578d247c5f68f957c521f85653b3577770499e",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6",
+      "txHash": "0xb9bdec54f7cc51adc19a441343abc1cab14c16fae9f7f68c72a6ff9168d4af90",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x610178dA211FEF7D417bC0e6FeD39F05609AD788",
+      "txHash": "0xefb4c1ddbb3f399b36566c0abe147fd739228dff797f6e31f5011cca911f116e",
+      "kind": "transparent"
+    },
+    {
+      "address": "0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0",
+      "txHash": "0x451ce6362606519fd1ebf744566bdc409e3df49e5dbe0e2b929a96428a5c215e",
+      "kind": "transparent"
+    },
+    {
+      "address": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+      "txHash": "0x1abc82e0ed8f4a7a3a969b42f97a15e147fb856feb8eb5c4d976537473d196ae",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+      "txHash": "0x07b7d4a4ac81967e7b5357993b5b937a023c3f5559ffc5fc8e703f12563b144e",
       "kind": "transparent"
     }
   ],
@@ -125,9 +135,9 @@
         }
       }
     },
-    "dd07cb270540f5bc87a19474d4162171b3dbd8c2fb5e27e972496ed75645b013": {
+    "1a34ffb76034ed57c7b79d5035def96350fc15f9c42700c06ef782fd14719887": {
       "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
-      "txHash": "0xd3832295cadafff3c047f0b3804b4fa9e1389a141235272ed72aa3914162e3ed",
+      "txHash": "0x6d6f46600828a08cd579080d19af3aee881545e36c59a6d910c20c7a0e7f5007",
       "layout": {
         "solcVersion": "0.8.17",
         "storage": [
@@ -194,15 +204,15 @@
             "slot": "151",
             "type": "t_mapping(t_address,t_bool)",
             "contract": "HashupStoreV1",
-            "src": "contracts/HashupStoreV1.sol:51"
+            "src": "contracts/HashupStoreV1.sol:103"
           },
           {
             "label": "_licenseSales",
             "offset": 0,
             "slot": "152",
-            "type": "t_mapping(t_address,t_struct(SaleInformation)1429_storage)",
+            "type": "t_mapping(t_address,t_struct(SaleInformation)2256_storage)",
             "contract": "HashupStoreV1",
-            "src": "contracts/HashupStoreV1.sol:54"
+            "src": "contracts/HashupStoreV1.sol:106"
           },
           {
             "label": "_hashupFee",
@@ -210,7 +220,15 @@
             "slot": "153",
             "type": "t_uint256",
             "contract": "HashupStoreV1",
-            "src": "contracts/HashupStoreV1.sol:59"
+            "src": "contracts/HashupStoreV1.sol:111"
+          },
+          {
+            "label": "_paymentToken",
+            "offset": 0,
+            "slot": "154",
+            "type": "t_address",
+            "contract": "HashupStoreV1",
+            "src": "contracts/HashupStoreV1.sol:113"
           }
         ],
         "types": {
@@ -234,11 +252,11 @@
             "label": "mapping(address => bool)",
             "numberOfBytes": "32"
           },
-          "t_mapping(t_address,t_struct(SaleInformation)1429_storage)": {
+          "t_mapping(t_address,t_struct(SaleInformation)2256_storage)": {
             "label": "mapping(address => struct HashupStoreV1.SaleInformation)",
             "numberOfBytes": "32"
           },
-          "t_struct(SaleInformation)1429_storage": {
+          "t_struct(SaleInformation)2256_storage": {
             "label": "struct HashupStoreV1.SaleInformation",
             "members": [
               {
