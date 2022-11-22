@@ -176,4 +176,28 @@ struct SaleInformation {
 
 #### withdraw
 
+```solidity 
+function changeLicensePrice(address license, uint256 newPrice)
+    public
+    onlyLicenseCreator(license)
+```
+Changes price of License. Its price for 1 unit of license so you are basically providing price per 0.01 license. If you want to set price for 1 license 
+you must multiply your newPrice argument by 100. It emits [PriceChanged](#pricechanged) event.
+
+Requirements:
+- Must be license creator
+
+#### withdraw
+
+```solidity 
+function withdrawLicenses(address license, uint256 amount)
+    external
+    onlyLicenseCreator(license)
+    returns (uint256)
+```
+This function transfers specific licenses from store to sender. If amount provided is bigger that contract balance it will transfer all remaining licenses. It emits [Withdrawal](#withdrawal) event.
+
+Requirements:
+- Must be license creator
+
 ### Internal functions
