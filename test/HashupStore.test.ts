@@ -1,119 +1,10 @@
-import { HashupStoreV1 } from "./../typechain-types/contracts/HashupStoreV1";
 import { expect } from "chai";
-import { ethers, upgrades } from "hardhat";
-import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { HashupStoreV1__factory } from "../typechain-types/factories/contracts/HashupStoreV1__factory";
-import { TestToken__factory } from "../typechain-types/factories/contracts/TestToken__factory";
-import { TestToken } from "../typechain-types/contracts/TestToken";
+import { ethers } from "hardhat";
 import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
-import { HashupLicense__factory } from "../typechain-types";
-
-enum ERRORS {
-  NOT_OWNER = "Ownable: caller is not the owner",
-  HASHUP_FEE_LIMIT = "HashupStore: HashupFee exceeded max limit",
-  NOT_LICENSE_CREATOR = "HashupStore: must be License creator",
-  SALE_SECOND_TIME = "HashupStore: Can't set for sale second time",
-}
+import { deployNeededContractsFixture } from "./test-helpers/fixtures";
+import { REVERT_MESSAGES } from "./test-helpers/reverts";
 
 describe("HashupStore", async function () {
-  const deployStoreV1 = async () => {
-    const HashupStoreV1 = (await ethers.getContractFactory(
-      "HashupStoreV1"
-    )) as HashupStoreV1__factory;
-
-    const storeV1 = (await upgrades.deployProxy(
-      HashupStoreV1,
-      []
-    )) as HashupStoreV1;
-    await storeV1.deployed();
-
-    return storeV1;
-  };
-
-  const deployTestToken = async () => {
-    const TestToken = (await ethers.getContractFactory(
-      "TestToken"
-    )) as TestToken__factory;
-
-    const testToken = (await TestToken.deploy()) as TestToken;
-    await testToken.deployed();
-
-    return testToken;
-  };
-
-  const deployLicense = async (
-    deployer: SignerWithAddress,
-    storeAddress: string
-  ) => {
-    const HashupLicense = (await ethers.getContractFactory(
-      "HashupLicense"
-    )) as HashupLicense__factory;
-
-    const testLicense = await HashupLicense.connect(deployer).deploy(
-      "Name",
-      "SYM",
-      "https://hashup.it",
-      ethers.constants.MaxUint256,
-      200,
-      storeAddress
-    );
-    await testLicense.deployed();
-
-    return testLicense;
-  };
-
-  const deployNeededContractsFixture = async () => {
-    const [owner, developer, userOne, userTwo, marketplace] =
-      await ethers.getSigners();
-
-    const storeV1 = await deployStoreV1();
-    const testToken = await deployTestToken();
-    const license = await deployLicense(developer, storeV1.address);
-
-    return {
-      owner,
-      developer,
-      userOne,
-      userTwo,
-      storeV1,
-      testToken,
-      license,
-      marketplace,
-    };
-  };
-
-  const deployNeededContractsAndSaleFixture = async () => {
-    const [owner, developer, userOne, userTwo, marketplace] =
-      await ethers.getSigners();
-
-    const storeV1 = await deployStoreV1();
-    const testToken = await deployTestToken();
-    const license = await deployLicense(developer, storeV1.address);
-
-    const price = 100;
-    const amount = 100;
-    const marketplaceFee = 50;
-
-    await license.approve(storeV1.address, ethers.constants.MaxUint256);
-    await storeV1
-      .connect(developer)
-      .sendLicenseToStore(license.address, price, amount, marketplaceFee);
-
-    return {
-      owner,
-      developer,
-      userOne,
-      userTwo,
-      storeV1,
-      testToken,
-      license,
-      price,
-      amount,
-      marketplaceFee,
-      marketplace,
-    };
-  };
-
   describe("Deployment", () => {
     it("Should set the right owner", async () => {
       const { owner, storeV1 } = await loadFixture(
@@ -167,7 +58,7 @@ describe("HashupStore", async function () {
       );
 
       await expect(storeV1.connect(userTwo).togglePause()).to.be.rejectedWith(
-        ERRORS.NOT_OWNER
+        REVERT_MESSAGES.NOT_OWNER
       );
     });
   });
@@ -178,7 +69,7 @@ describe("HashupStore", async function () {
         deployNeededContractsFixture
       );
       await expect(storeV1.connect(userTwo).setHashupFee(5)).to.be.revertedWith(
-        ERRORS.NOT_OWNER
+        REVERT_MESSAGES.NOT_OWNER
       );
     });
     it("Should set fee for correct data", async () => {
@@ -192,27 +83,27 @@ describe("HashupStore", async function () {
       expect(await storeV1.getHashupFee()).to.be.equal(newFee);
     });
 
-    it("Should revert for incorrect data", async () => {
+    it("Should revert for too high fee", async () => {
       const { storeV1 } = await loadFixture(deployNeededContractsFixture);
 
       const newFee = 11;
 
       await expect(storeV1.setHashupFee(newFee)).to.be.revertedWith(
-        ERRORS.HASHUP_FEE_LIMIT
+        REVERT_MESSAGES.HASHUP_FEE_LIMIT
       );
     });
   });
 
-  describe("setHashupFee()", () => {
+  describe("setting new payment token fee", () => {
     it("Should revert if not owner", async () => {
       const { storeV1, userTwo, license } = await loadFixture(
         deployNeededContractsFixture
       );
       await expect(
         storeV1.connect(userTwo).setPaymentToken(license.address)
-      ).to.be.revertedWith(ERRORS.NOT_OWNER);
+      ).to.be.revertedWith(REVERT_MESSAGES.NOT_OWNER);
     });
-    it("Should set fee for correct data", async () => {
+    it("should change token", async () => {
       const { storeV1, license } = await loadFixture(
         deployNeededContractsFixture
       );
@@ -258,21 +149,11 @@ describe("HashupStore", async function () {
         storeV1
           .connect(userTwo)
           .sendLicenseToStore(license.address, price, amount, marketplaceFee)
-      ).to.be.revertedWith(ERRORS.NOT_LICENSE_CREATOR);
+      ).to.be.revertedWith(REVERT_MESSAGES.NOT_LICENSE_CREATOR);
     });
   });
-  describe("isWhitelisted()", () => {
-    it("returns correct value", async () => {
-      const { storeV1, marketplace } = await loadFixture(
-        deployNeededContractsFixture
-      );
-      const isWhitelisted = await storeV1.isWhitelisted(marketplace.address);
-
-      expect(isWhitelisted).to.be.equal(false);
-    });
-  });
-  describe("toggleWhitelisted()", () => {
-    it("toggles whitelist value", async () => {
+  describe("Adding to whitelist", () => {
+    it("should toggle value", async () => {
       const { storeV1, marketplace } = await loadFixture(
         deployNeededContractsFixture
       );
@@ -289,7 +170,21 @@ describe("HashupStore", async function () {
       );
       await expect(
         storeV1.connect(userTwo).toggleWhitelisted(marketplace.address)
-      ).to.be.revertedWith(ERRORS.NOT_OWNER);
+      ).to.be.revertedWith(REVERT_MESSAGES.NOT_OWNER);
     });
   });
+  describe("Buying licenses", () => {
+    it("should revert if not enough payment token", async() => {
+
+    })
+    it("should revert if game not listed", async() => {
+
+    })
+    it("should revert if payment token not approved", async() => {
+
+    })
+    it("should revert if marketplace not whitelisted", async() => {
+      
+    })
+  })
 });

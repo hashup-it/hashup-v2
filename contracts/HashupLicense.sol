@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 // HashUp Contracts V1
-pragma solidity ^0.8;
+pragma solidity ^0.8.17;
 
 import "./helpers/LicenseMetadata.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";

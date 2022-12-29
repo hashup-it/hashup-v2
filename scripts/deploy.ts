@@ -1,23 +1,24 @@
-import { ethers } from "hardhat";
+import { ethers, upgrades } from "hardhat";
+import { HashupStoreV1, HashupStoreV1__factory } from "../typechain-types";
 
-async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const ONE_YEAR_IN_SECS = 365 * 24 * 60 * 60;
-  const unlockTime = currentTimestampInSeconds + ONE_YEAR_IN_SECS;
-
-  const lockedAmount = ethers.utils.parseEther("1");
-
-  const Lock = await ethers.getContractFactory("Lock");
-  const lock = await Lock.deploy(unlockTime, { value: lockedAmount });
-
-  await lock.deployed();
-
-  console.log(`Lock with 1 ETH and unlock timestamp ${unlockTime} deployed to ${lock.address}`);
+const deployStore = async () => {
+	
+	const HashupStoreV1 = (await ethers.getContractFactory(
+		"HashupStoreV1"
+	  )) as HashupStoreV1__factory;
+	
+	  const storeV1 = (await upgrades.deployProxy(
+		HashupStoreV1,
+		[]
+	  )) as HashupStoreV1;
+	 
+	  console.log(storeV1.address);
+	  await storeV1.deployed();
+	  // initialize contract
+	  await storeV1.initialize();
+	
+	
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+
+deployStore()

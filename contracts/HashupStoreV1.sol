@@ -4,11 +4,10 @@ pragma solidity 0.8.17;
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import "./HashupLicense.sol";
-import "hardhat/console.sol";
+
 
 /// @title Hashup Multimarketplace Store
 /// @author The name of the author
@@ -28,12 +27,14 @@ contract HashupStoreV1 is
 
     event Bought(
         address license,
+        address marketplace,
         uint256 price,
         uint256 amount,
         address referrer
     );
 
     event NewSale(
+        address creator,
         address license,
         string symbol,
         string name,
@@ -44,7 +45,9 @@ contract HashupStoreV1 is
         uint256 transferFee,
         uint256 marketplaceFee
     );
+
     event PriceChanged(address license, uint256 newPrice);
+    
     event Withdrawal(address license, uint256 amount);
 
     // Whitelist of addresses that are elgible to take marketplace fee
@@ -56,7 +59,6 @@ contract HashupStoreV1 is
     uint256 constant MAX_MARKETPLACE_FEE = 90;
 
     uint256 private _hashupFee;
-
     address private _paymentToken;
 
     function initialize() public initializer {
@@ -113,7 +115,7 @@ contract HashupStoreV1 is
     }
 
     // Returns whether address is whitelisted marketplace
-    function _checkWhitelisted(address marketplace) internal  {
+    function _checkWhitelisted(address marketplace) internal {
         require(
             _marketWhitelist[marketplace] == true,
             "HashupStore: marketplace must be whitelisted."
@@ -136,6 +138,8 @@ contract HashupStoreV1 is
         );
     }
 
+
+
     function sendLicenseToStore(
         address license,
         uint256 price,
@@ -146,7 +150,10 @@ contract HashupStoreV1 is
             _licenseSales[license].sale == false,
             "HashupStore: Can't set for sale second time"
         );
-        require(marketplaceFee <= MAX_MARKETPLACE_FEE, "HashupStore: Marketplace fee is too high");
+        require(
+            marketplaceFee <= MAX_MARKETPLACE_FEE,
+            "HashupStore: Marketplace fee is too high"
+        );
 
         HashupLicense licenseToken = HashupLicense(license);
         licenseToken.transferFrom(msg.sender, address(this), amount);
@@ -154,6 +161,7 @@ contract HashupStoreV1 is
         _licenseSales[license] = SaleInformation(price, marketplaceFee, true);
 
         emit NewSale(
+            msg.sender,
             license,
             licenseToken.symbol(),
             licenseToken.name(),
@@ -203,7 +211,10 @@ contract HashupStoreV1 is
         public
         onlyLicenseCreator(license)
     {
-        require(_licenseSales[license].sale == true, "HashupStore: License isn't listed in store");
+        require(
+            _licenseSales[license].sale == true,
+            "HashupStore: License isn't listed in store"
+        );
         _licenseSales[license].price = newPrice;
         emit PriceChanged(license, newPrice);
     }
@@ -238,6 +249,8 @@ contract HashupStoreV1 is
         IERC20 paymentToken = IERC20(_paymentToken);
         HashupLicense licenseToken = HashupLicense(license);
 
+        require(_licenseSales[license].sale == true, "HashupStore: License must be listed");
+
         uint256 totalPrice = getLicensePrice(license) * amount;
 
         (
@@ -262,6 +275,6 @@ contract HashupStoreV1 is
         // Send tokens to HashUp
         paymentToken.transferFrom(msg.sender, owner(), toHashup);
 
-        emit Bought(license, totalPrice, amount, referrer);
+        emit Bought(license, marketplace, totalPrice, amount, referrer);
     }
 }
